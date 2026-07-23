@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Decision Twin - Resume Analyzer</title>
+
+    <!-- PDF parsing library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- DOCX parsing library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+    <style>
+        @import url(
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        );
+
+        :root {
+            --dark-navy: #001D39;
+            --dark-blue: #0A4174;
+            --steel-blue: #49769F;
+            --teal-blue: #4E8EA2;
+            --soft-blue: #6EA2B3;
+            --sky-blue: #7BBDE8;
+            --light-blue: #BDD8E9;
+
+            --text: #FFFFFF;
+            --muted: #BDD8E9;
+
+            --panel:
+                linear-gradient(
+                    145deg,
+                    rgba(10, 65, 116, 0.94),
+                    rgba(0, 29, 57, 0.95)
+                );
+
+            --border:
+                rgba(189, 216, 233, 0.24);
+
+            --shadow:
+                0 24px 60px rgba(0, 29, 57, 0.42);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: "Inter", sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 90% 8%,
+                    rgba(189, 216, 233, 0.35),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 8% 35%,
+                    rgba(78, 142, 162, 0.28),
+                    transparent 32%
+                ),
+                linear-gradient(
+                    180deg,
+                    #BDD8E9 0%,
+                    #7BBDE8 20%,
+                    #6EA2B3 38%,
+                    #4E8EA2 56%,
+                    #49769F 72%,
+                    #0A4174 88%,
+                    #001D39 100%
+                );
+
+            background-attachment: fixed;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button,
+        label,
+        select {
+            cursor: pointer;
+        }
+
+        .container {
+            width: min(1180px, 92%);
+            margin: auto;
+            padding: 34px 0 60px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 44px;
+
+            color: var(--dark-navy);
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 14px;
+
+            color: var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+
+            box-shadow:
+                0 12px 28px rgba(0, 29, 57, 0.28);
+        }
+
+        .hero {
+            display: block;
+
+            margin-bottom: 28px;
+
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin-bottom: 12px;
+
+            color: var(--dark-blue);
+
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin-bottom: 16px;
+
+            color: var(--dark-navy);
+
+            font-size: clamp(38px, 6vw, 66px);
+            line-height: 1.03;
+        }
+
+        .gradient-text {
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--dark-blue),
+                    var(--teal-blue)
+                );
+
+            background-clip: text;
+            -webkit-background-clip: text;
+
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 740px;
+            margin: auto;
+
+            color: var(--dark-navy);
+
+            font-weight: 500;
+            line-height: 1.8;
+        }
+
+        .panel {
+            border: 1px solid var(--border);
+            border-radius: 22px;
+
+            background: var(--panel);
+
+            box-shadow: var(--shadow);
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .panel-padding {
+            padding: 24px;
+        }
+
+        .upload-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 18px;
+        }
+
+        .drop-zone {
+            min-height: 270px;
+
+            display: grid;
+            place-items: center;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border:
+                2px dashed
+                rgba(189, 216, 233, 0.55);
+
+            border-radius: 18px;
+
+            background:
+                rgba(73, 118, 159, 0.42);
+
+            transition: 0.25s ease;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragging {
+            border-color: var(--light-blue);
+
+            background:
+                rgba(78, 142, 162, 0.62);
+
+            transform: translateY(-2px);
+        }
+
+        .drop-icon {
+            margin-bottom: 14px;
+
+            font-size: 55px;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .small-text {
+            margin-top: 10px;
+
+            color: var(--light-blue);
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .file-name {
+            margin-top: 14px;
+
+            color: var(--sky-blue);
+
+            font-weight: 700;
+
+            word-break: break-word;
+        }
+
+        .controls {
+            display: grid;
+            align-content: center;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 9px;
+        }
+
+        .form-group label {
+            color: var(--light-blue);
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 14px;
+
+            color: white;
+
+            border:
+                1px solid
+                rgba(189, 216, 233, 0.3);
+
+            border-radius: 12px;
+
+            outline: none;
+
+            background: var(--dark-blue);
+        }
+
+        select:focus {
+            border-color: var(--sky-blue);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(123, 189, 232, 0.18);
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 14px 18px;
+
+            border: none;
+            border-radius: 12px;
+
+            font-weight: 800;
+
+            transition: 0.25s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button:disabled {
+            cursor: not-allowed;
+
+            opacity: 0.55;
+
+            transform: none;
+        }
+
+        .button-primary {
+            color: var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(0, 29, 57, 0.25);
+        }
+
+        .button-primary:hover {
+            color: var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--light-blue),
+                    var(--sky-blue)
+                );
+        }
+
+        .button-secondary {
+            color: white;
+
+            border:
+                1px solid
+                rgba(189, 216, 233, 0.32);
+
+            background:
+                rgba(73, 118, 159, 0.48);
+        }
+
+        .button-secondary:hover {
+            background:
+                rgba(78, 142, 162, 0.7);
+        }
+
+        .loading {
+            display: none;
+
+            margin-top: 18px;
+            padding: 30px;
+
+            text-align: center;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+
+            margin: 0 auto 15px;
+
+            border:
+                4px solid
+                rgba(189, 216, 233, 0.14);
+
+            border-top-color: var(--sky-blue);
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .grid-four {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+
+            margin-top: 18px;
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+
+            margin-top: 18px;
+        }
+
+        .stat-card {
+            padding: 22px;
+
+            text-align: center;
+        }
+
+        .stat-label {
+            margin-bottom: 12px;
+
+            color: var(--light-blue);
+
+            font-size: 13px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        .cyan {
+            color: var(--sky-blue);
+        }
+
+        .yellow {
+            color: var(--soft-blue);
+        }
+
+        .red {
+            color: var(--teal-blue);
+        }
+
+        .score-ring {
+            --score: 0;
+
+            position: relative;
+
+            width: 115px;
+            height: 115px;
+
+            display: grid;
+            place-items: center;
+
+            margin: 8px auto 0;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    var(--sky-blue)
+                    calc(var(--score) * 1%),
+
+                    var(--light-blue)
+                    calc(var(--score) * 1%),
+
+                    rgba(0, 29, 57, 0.58) 0
+                );
+        }
+
+        .score-ring::before {
+            content: "";
+
+            position: absolute;
+
+            width: 84px;
+            height: 84px;
+
+            border-radius: 50%;
+
+            background: var(--dark-navy);
+        }
+
+        .score-ring strong {
+            position: relative;
+
+            color: white;
+
+            font-size: 24px;
+        }
+
+        .section-title {
+            margin-bottom: 18px;
+
+            font-size: 18px;
+        }
+
+        .skill-item {
+            margin-bottom: 17px;
+        }
+
+        .skill-heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+
+            margin-bottom: 8px;
+
+            font-size: 13px;
+        }
+
+        .progress-bar {
+            height: 8px;
+
+            overflow: hidden;
+
+            border-radius: 999px;
+
+            background:
+                rgba(0, 29, 57, 0.58);
+        }
+
+        .progress-fill {
+            width: 0;
+            height: 100%;
+
+            border-radius: inherit;
+
+            transition: width 0.9s ease;
+        }
+
+        .progress-fill.found {
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+        }
+
+        .progress-fill.missing {
+            background: var(--teal-blue);
+        }
+
+        .gap-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .gap-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            padding: 13px 14px;
+
+            border-left:
+                3px solid
+                var(--sky-blue);
+
+            border-radius: 12px;
+
+            background:
+                rgba(73, 118, 159, 0.42);
+        }
+
+        .priority {
+            padding: 6px 9px;
+
+            color: var(--light-blue);
+
+            border:
+                1px solid
+                var(--light-blue);
+
+            border-radius: 999px;
+
+            background: var(--dark-navy);
+
+            font-size: 11px;
+
+            white-space: nowrap;
+        }
+
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .recommendation-card {
+            min-height: 190px;
+
+            padding: 21px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(73, 118, 159, 0.58),
+                    rgba(10, 65, 116, 0.82)
+                );
+        }
+
+        .recommendation-icon {
+            margin-bottom: 13px;
+
+            font-size: 30px;
+        }
+
+        .recommendation-card h3 {
+            margin-bottom: 10px;
+
+            font-size: 16px;
+        }
+
+        .recommendation-card p {
+            color: var(--light-blue);
+
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .recommendation-card ul {
+            display: grid;
+            gap: 9px;
+
+            margin-top: 13px;
+            padding-left: 18px;
+
+            color: var(--light-blue);
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .roadmap-list {
+            display: grid;
+            gap: 13px;
+        }
+
+        .roadmap-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: flex-start;
+            gap: 15px;
+
+            padding: 17px;
+
+            border:
+                1px solid
+                rgba(189, 216, 233, 0.1);
+
+            border-radius: 15px;
+
+            background:
+                rgba(73, 118, 159, 0.34);
+        }
+
+        .roadmap-number {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+
+            color: var(--dark-navy);
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+        }
+
+        .roadmap-step h3 {
+            margin-bottom: 6px;
+
+            font-size: 15px;
+        }
+
+        .roadmap-step p {
+            color: var(--light-blue);
+
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            margin-top: 18px;
+        }
+
+        .toast {
+            position: fixed;
+
+            right: 22px;
+            bottom: 22px;
+
+            z-index: 1000;
+
+            padding: 14px 18px;
+
+            color: var(--dark-navy);
+
+            border:
+                1px solid
+                var(--light-blue);
+
+            border-radius: 12px;
+
+            background: var(--light-blue);
+
+            box-shadow:
+                0 18px 40px
+                rgba(0, 29, 57, 0.38);
+        }
+
+        footer {
+            margin-top: 38px;
+
+            color: var(--light-blue);
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+        @media (max-width: 950px) {
+            .upload-layout,
+            .grid-two {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-four {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .recommendation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid-four {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+        }
+
+        @media print {
+            body {
+                color: black;
+
+                background: white;
+            }
+
+            .brand,
+            .upload-layout,
+            .action-row,
+            footer {
+                display: none !important;
+            }
+
+            .panel {
+                border: 1px solid #bbbbbb;
+
+                color: black;
+
+                background: white;
+
+                box-shadow: none;
+            }
+
+            .muted,
+            .small-text,
+            .stat-label,
+            .recommendation-card ul,
+            .roadmap-step p {
+                color: #444444;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+    
+
+        <section class="hero">
+            <div class="eyebrow">
+                AI Career Intelligence
+            </div>
+
+            <h1>
+                Resume &amp;
+                <span class="gradient-text">
+                    Skill Analyzer
+                </span>
+            </h1>
+
+            <p>
+                Upload your resume and compare your real resume
+                content with the required skills for your selected
+                career.
+            </p>
+        </section>
+
+        <section class="panel panel-padding upload-layout">
+
+            <div
+                class="drop-zone"
+                id="dropZone"
+                tabindex="0"
+            >
+                <div>
+                    <div class="drop-icon">
+                        ☁️
+                    </div>
+
+                    <h2>
+                        Upload your resume
+                    </h2>
+
+                    <p class="muted">
+                        Drag and drop your file or browse
+                        from your device.
+                    </p>
+
+                    <label
+                        for="resumeInput"
+                        class="button button-secondary"
+                        style="margin-top: 18px"
+                    >
+                        Choose Resume
+                    </label>
+
+                    <input
+                        id="resumeInput"
+                        type="file"
+                        accept=".pdf,.docx,.txt"
+                        hidden
+                    >
+
+                    <div
+                        class="file-name"
+                        id="fileName"
+                    >
+                        No file selected
+                    </div>
+
+                    <div class="small-text">
+                        PDF, DOCX or TXT • Maximum 5 MB
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+
+                <div class="form-group">
+                    <label for="careerSelect">
+                        Select target career
+                    </label>
+
+                    <select id="careerSelect">
+                        <option value="dataScientist">
+                            Data Scientist
+                        </option>
+
+                        <option value="frontendDeveloper">
+                            Frontend Developer
+                        </option>
+
+                        <option value="backendDeveloper">
+                            Backend Developer
+                        </option>
+
+                        <option value="aiEngineer">
+                            AI Engineer
+                        </option>
+                    </select>
+                </div>
+
+                <button
+                    class="button button-primary"
+                    id="analyzeButton"
+                >
+                    ✨ Analyze Resume
+                </button>
+
+                <p class="small-text">
+                    Your resume is processed inside your browser.
+                </p>
+            </div>
+        </section>
+
+        <section
+            class="panel loading"
+            id="loadingSection"
+        >
+            <div class="spinner"></div>
+
+            <h3>
+                Parsing and analyzing your resume...
+            </h3>
+
+            <p class="muted">
+                Reading the document and comparing skills.
+            </p>
+        </section>
+
+        <div
+            class="results"
+            id="resultsSection"
+        >
+
+            <section class="grid-four">
+
+                <article class="panel stat-card">
+                    <div class="stat-label">
+                        Overall Career Match
+                    </div>
+
+                    <div
+                        class="score-ring"
+                        id="scoreRing"
+                    >
+                        <strong id="scoreText">
+                            0%
+                        </strong>
+                    </div>
+                </article>
+
+                <article class="panel stat-card">
+                    <div class="stat-label">
+                        Skills Found
+                    </div>
+
+                    <div
+                        class="stat-number cyan"
+                        id="foundCount"
+                    >
+                        0
+                    </div>
+                </article>
+
+                <article class="panel stat-card">
+                    <div class="stat-label">
+                        Skills Required
+                    </div>
+
+                    <div
+                        class="stat-number yellow"
+                        id="requiredCount"
+                    >
+                        0
+                    </div>
+                </article>
+
+                <article class="panel stat-card">
+                    <div class="stat-label">
+                        Missing Skills
+                    </div>
+
+                    <div
+                        class="stat-number red"
+                        id="missingCount"
+                    >
+                        0
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="grid-two">
+
+                <article class="panel panel-padding">
+
+                    <h2 class="section-title">
+                        Skill Breakdown
+                    </h2>
+
+                    <div id="skillBreakdown"></div>
+                </article>
+
+                <article class="panel panel-padding">
+
+                    <h2 class="section-title">
+                        Missing Skills
+                    </h2>
+
+                    <div
+                        class="gap-list"
+                        id="missingSkillsList"
+                    ></div>
+                </article>
+
+            </section>
+
+            <section
+                class="panel panel-padding"
+                style="margin-top: 18px"
+            >
+                <h2 class="section-title">
+                    Recommended Learning Resources
+                </h2>
+
+                <div class="recommendation-grid">
+
+                    <article
+                        class="panel recommendation-card"
+                    >
+                        <div class="recommendation-icon">
+                            🎓
+                        </div>
+
+                        <h3>
+                            Recommended Courses
+                        </h3>
+
+                        <ul id="courseList"></ul>
+                    </article>
+
+                    <article
+                        class="panel recommendation-card"
+                    >
+                        <div class="recommendation-icon">
+                            🏆
+                        </div>
+
+                        <h3>
+                            Recommended Certifications
+                        </h3>
+
+                        <ul id="certificationList"></ul>
+                    </article>
+
+                    <article
+                        class="panel recommendation-card"
+                    >
+                        <div class="recommendation-icon">
+                            💻
+                        </div>
+
+                        <h3>
+                            Suggested Projects
+                        </h3>
+
+                        <ul id="projectList"></ul>
+                    </article>
+
+                </div>
+            </section>
+
+            <section
+                class="panel panel-padding"
+                style="margin-top: 18px"
+            >
+                <h2 class="section-title">
+                    Generated Career Roadmap
+                </h2>
+
+                <div
+                    class="roadmap-list"
+                    id="roadmapList"
+                ></div>
+
+                <div class="action-row">
+
+                    <button
+                        class="button button-primary"
+                        id="downloadReportButton"
+                    >
+                        ⬇ Download Analysis
+                    </button>
+
+                    <button
+                        class="button button-secondary"
+                        id="printReportButton"
+                    >
+                        🖨 Print Report
+                    </button>
+
+                </div>
+            </section>
+
+        </div>
+
+        <footer>
+            Decision Twin • Resume and Career Intelligence Module
+        </footer>
+
+    </main>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+        const careerProfiles = {
+            dataScientist: {
+                name: "Data Scientist",
+
+                skills: [
+                    "python",
+                    "sql",
+                    "pandas",
+                    "numpy",
+                    "statistics",
+                    "probability",
+                    "machine learning",
+                    "data visualization",
+                    "matplotlib",
+                    "power bi",
+                    "deep learning",
+                    "nlp"
+                ],
+
+                courses: [
+                    "Python for Data Science",
+                    "Statistics and Probability",
+                    "Machine Learning Fundamentals",
+                    "SQL for Data Analysis"
+                ],
+
+                certifications: [
+                    "Google Advanced Data Analytics Certificate",
+                    "IBM Data Science Professional Certificate",
+                    "Microsoft Power BI Data Analyst"
+                ],
+
+                projects: [
+                    "Customer Churn Prediction",
+                    "Sales Data Analytics Dashboard",
+                    "Movie Recommendation System",
+                    "Sentiment Analysis Application"
+                ],
+
+                roadmap: [
+                    {
+                        title:
+                            "Programming Foundations",
+
+                        description:
+                            "Learn Python programming, basic mathematics and problem solving."
+                    },
+
+                    {
+                        title:
+                            "Data Handling",
+
+                        description:
+                            "Practice SQL, NumPy, Pandas and data cleaning."
+                    },
+
+                    {
+                        title:
+                            "Statistics and Visualization",
+
+                        description:
+                            "Learn probability, statistics, Matplotlib and Power BI."
+                    },
+
+                    {
+                        title:
+                            "Machine Learning",
+
+                        description:
+                            "Build regression, classification and clustering models."
+                    },
+
+                    {
+                        title:
+                            "Advanced AI",
+
+                        description:
+                            "Explore deep learning, NLP and model deployment."
+                    },
+
+                    {
+                        title:
+                            "Portfolio Development",
+
+                        description:
+                            "Build projects and publish them on GitHub."
+                    }
+                ]
+            },
+
+            frontendDeveloper: {
+                name: "Frontend Developer",
+
+                skills: [
+                    "html",
+                    "css",
+                    "javascript",
+                    "responsive design",
+                    "git",
+                    "github",
+                    "react",
+                    "api",
+                    "accessibility",
+                    "typescript"
+                ],
+
+                courses: [
+                    "Modern HTML and CSS",
+                    "JavaScript Fundamentals",
+                    "React Development",
+                    "Responsive Web Design"
+                ],
+
+                certifications: [
+                    "Meta Front-End Developer Certificate",
+                    "freeCodeCamp Responsive Web Design",
+                    "JavaScript Algorithms and Data Structures"
+                ],
+
+                projects: [
+                    "Responsive Portfolio Website",
+                    "Expense Tracker",
+                    "Weather Dashboard",
+                    "E-commerce Product Interface"
+                ],
+
+                roadmap: [
+                    {
+                        title:
+                            "Web Foundations",
+
+                        description:
+                            "Learn HTML structure, CSS styling and responsive layouts."
+                    },
+
+                    {
+                        title:
+                            "JavaScript",
+
+                        description:
+                            "Practice variables, functions, arrays, DOM and events."
+                    },
+
+                    {
+                        title:
+                            "Version Control",
+
+                        description:
+                            "Learn Git, GitHub and collaborative development."
+                    },
+
+                    {
+                        title:
+                            "Frontend Framework",
+
+                        description:
+                            "Learn React components, props, state and routing."
+                    },
+
+                    {
+                        title:
+                            "APIs and Testing",
+
+                        description:
+                            "Consume APIs and learn frontend testing."
+                    },
+
+                    {
+                        title:
+                            "Portfolio",
+
+                        description:
+                            "Build responsive frontend projects and deploy them."
+                    }
+                ]
+            },
+
+            backendDeveloper: {
+                name: "Backend Developer",
+
+                skills: [
+                    "python",
+                    "fastapi",
+                    "flask",
+                    "django",
+                    "sql",
+                    "database",
+                    "api",
+                    "rest",
+                    "authentication",
+                    "jwt",
+                    "docker",
+                    "deployment"
+                ],
+
+                courses: [
+                    "Python Backend Development",
+                    "FastAPI Fundamentals",
+                    "Database and SQL",
+                    "REST API Development"
+                ],
+
+                certifications: [
+                    "Meta Back-End Developer Certificate",
+                    "IBM Full Stack Software Developer",
+                    "Microsoft Azure Fundamentals"
+                ],
+
+                projects: [
+                    "Student Management REST API",
+                    "Authentication System",
+                    "Online Complaint Management API",
+                    "Task Manager Backend"
+                ],
+
+                roadmap: [
+                    {
+                        title:
+                            "Programming Foundations",
+
+                        description:
+                            "Strengthen Python programming and object-oriented concepts."
+                    },
+
+                    {
+                        title:
+                            "Databases",
+
+                        description:
+                            "Learn relational databases, SQL and data modelling."
+                    },
+
+                    {
+                        title:
+                            "Backend Framework",
+
+                        description:
+                            "Build applications using FastAPI, Flask or Django."
+                    },
+
+                    {
+                        title:
+                            "REST APIs",
+
+                        description:
+                            "Create CRUD APIs and understand HTTP methods."
+                    },
+
+                    {
+                        title:
+                            "Security and Deployment",
+
+                        description:
+                            "Learn authentication, JWT, Docker and deployment."
+                    },
+
+                    {
+                        title:
+                            "Backend Portfolio",
+
+                        description:
+                            "Build and document production-style backend projects."
+                    }
+                ]
+            },
+
+            aiEngineer: {
+                name: "AI Engineer",
+
+                skills: [
+                    "python",
+                    "machine learning",
+                    "deep learning",
+                    "tensorflow",
+                    "pytorch",
+                    "nlp",
+                    "computer vision",
+                    "mlops",
+                    "docker",
+                    "cloud",
+                    "api",
+                    "deployment"
+                ],
+
+                courses: [
+                    "Machine Learning Specialization",
+                    "Deep Learning Fundamentals",
+                    "Natural Language Processing",
+                    "MLOps and Model Deployment"
+                ],
+
+                certifications: [
+                    "Microsoft Azure AI Engineer Associate",
+                    "Google Professional Machine Learning Engineer",
+                    "TensorFlow Developer Certificate"
+                ],
+
+                projects: [
+                    "AI Resume Analyzer",
+                    "Image Classification System",
+                    "Chatbot with NLP",
+                    "Deployed Machine Learning API"
+                ],
+
+                roadmap: [
+                    {
+                        title:
+                            "Python and Mathematics",
+
+                        description:
+                            "Learn Python, linear algebra, statistics and probability."
+                    },
+
+                    {
+                        title:
+                            "Machine Learning",
+
+                        description:
+                            "Understand model training, evaluation and feature engineering."
+                    },
+
+                    {
+                        title:
+                            "Deep Learning",
+
+                        description:
+                            "Learn neural networks using TensorFlow or PyTorch."
+                    },
+
+                    {
+                        title:
+                            "AI Specialization",
+
+                        description:
+                            "Choose NLP, computer vision or generative AI."
+                    },
+
+                    {
+                        title:
+                            "MLOps",
+
+                        description:
+                            "Learn APIs, Docker, cloud platforms and model deployment."
+                    },
+
+                    {
+                        title:
+                            "AI Portfolio",
+
+                        description:
+                            "Create end-to-end AI projects and publish documentation."
+                    }
+                ]
+            }
+        };
+
+        let selectedResumeFile = null;
+        let latestAnalysis = null;
+
+        const dropZone =
+            document.getElementById("dropZone");
+
+        const resumeInput =
+            document.getElementById("resumeInput");
+
+        const fileName =
+            document.getElementById("fileName");
+
+        const careerSelect =
+            document.getElementById("careerSelect");
+
+        const analyzeButton =
+            document.getElementById("analyzeButton");
+
+        const loadingSection =
+            document.getElementById("loadingSection");
+
+        const resultsSection =
+            document.getElementById("resultsSection");
+
+        function showToast(message) {
+            const previousToast =
+                document.querySelector(".toast");
+
+            if (previousToast) {
+                previousToast.remove();
+            }
+
+            const toast =
+                document.createElement("div");
+
+            toast.className = "toast";
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2600);
+        }
+
+        function validateResume(file) {
+            if (!file) {
+                return false;
+            }
+
+            const validExtension =
+                /\.(pdf|docx|txt)$/i.test(file.name);
+
+            if (!validExtension) {
+                showToast(
+                    "Please select a PDF, DOCX or TXT file."
+                );
+
+                return false;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showToast(
+                    "The resume must be smaller than 5 MB."
+                );
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function selectResume(file) {
+            if (!validateResume(file)) {
+                return;
+            }
+
+            selectedResumeFile = file;
+
+            fileName.textContent =
+                "✓ " + file.name;
+
+            showToast(
+                "Resume selected successfully."
+            );
+        }
+
+        resumeInput.addEventListener(
+            "change",
+            () => {
+                selectResume(
+                    resumeInput.files[0]
+                );
+            }
+        );
+
+        dropZone.addEventListener(
+            "click",
+            event => {
+                if (
+                    event.target.tagName
+                    !== "LABEL"
+                ) {
+                    resumeInput.click();
+                }
+            }
+        );
+
+        dropZone.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Enter"
+                    || event.key === " "
+                ) {
+                    resumeInput.click();
+                }
+            }
+        );
+
+        [
+            "dragenter",
+            "dragover"
+        ].forEach(eventName => {
+            dropZone.addEventListener(
+                eventName,
+                event => {
+                    event.preventDefault();
+
+                    dropZone.classList.add(
+                        "dragging"
+                    );
+                }
+            );
+        });
+
+        [
+            "dragleave",
+            "drop"
+        ].forEach(eventName => {
+            dropZone.addEventListener(
+                eventName,
+                event => {
+                    event.preventDefault();
+
+                    dropZone.classList.remove(
+                        "dragging"
+                    );
+                }
+            );
+        });
+
+        dropZone.addEventListener(
+            "drop",
+            event => {
+                selectResume(
+                    event.dataTransfer.files[0]
+                );
+            }
+        );
+
+        async function extractPdfText(file) {
+            const arrayBuffer =
+                await file.arrayBuffer();
+
+            const pdfDocument =
+                await pdfjsLib.getDocument({
+                    data: arrayBuffer
+                }).promise;
+
+            let extractedText = "";
+
+            for (
+                let pageNumber = 1;
+                pageNumber <= pdfDocument.numPages;
+                pageNumber++
+            ) {
+                const page =
+                    await pdfDocument.getPage(
+                        pageNumber
+                    );
+
+                const content =
+                    await page.getTextContent();
+
+                extractedText +=
+                    " "
+                    + content.items
+                        .map(item => item.str)
+                        .join(" ");
+            }
+
+            return extractedText;
+        }
+
+        async function extractDocxText(file) {
+            const arrayBuffer =
+                await file.arrayBuffer();
+
+            const result =
+                await mammoth.extractRawText({
+                    arrayBuffer: arrayBuffer
+                });
+
+            return result.value;
+        }
+
+        async function extractResumeText(file) {
+            const extension =
+                file.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+            if (extension === "pdf") {
+                return await extractPdfText(file);
+            }
+
+            if (extension === "docx") {
+                return await extractDocxText(file);
+            }
+
+            if (extension === "txt") {
+                return await file.text();
+            }
+
+            throw new Error(
+                "Unsupported resume file."
+            );
+        }
+
+        function analyzeResumeText(
+            resumeText,
+            careerProfile
+        ) {
+            const normalizedText =
+                resumeText
+                    .toLowerCase()
+                    .replace(/\s+/g, " ");
+
+            const skillResults =
+                careerProfile.skills.map(
+                    skill => {
+                        return {
+                            skill: skill,
+
+                            found:
+                                normalizedText.includes(
+                                    skill
+                                )
+                        };
+                    }
+                );
+
+            const foundSkills =
+                skillResults.filter(
+                    result => result.found
+                );
+
+            const missingSkills =
+                skillResults.filter(
+                    result => !result.found
+                );
+
+            const score =
+                Math.round(
+                    (
+                        foundSkills.length
+                        / skillResults.length
+                    )
+                    * 100
+                );
+
+            return {
+                profile:
+                    careerProfile,
+
+                score:
+                    score,
+
+                skillResults:
+                    skillResults,
+
+                foundSkills:
+                    foundSkills,
+
+                missingSkills:
+                    missingSkills
+            };
+        }
+
+        function formatSkill(skill) {
+            return skill
+                .split(" ")
+                .map(word => {
+                    return (
+                        word.charAt(0)
+                            .toUpperCase()
+                        + word.slice(1)
+                    );
+                })
+                .join(" ");
+        }
+
+        function renderAnalysis(analysis) {
+            latestAnalysis = analysis;
+
+            document
+                .getElementById("scoreText")
+                .textContent =
+                    analysis.score + "%";
+
+            document
+                .getElementById("scoreRing")
+                .style.setProperty(
+                    "--score",
+                    analysis.score
+                );
+
+            document
+                .getElementById("foundCount")
+                .textContent =
+                    analysis.foundSkills.length;
+
+            document
+                .getElementById("requiredCount")
+                .textContent =
+                    analysis.skillResults.length;
+
+            document
+                .getElementById("missingCount")
+                .textContent =
+                    analysis.missingSkills.length;
+
+            document
+                .getElementById("skillBreakdown")
+                .innerHTML =
+                    analysis.skillResults
+                        .map(result => {
+                            return `
+                                <div class="skill-item">
+
+                                    <div class="skill-heading">
+
+                                        <span>
+                                            ${formatSkill(
+                                                result.skill
+                                            )}
+                                        </span>
+
+                                        <strong>
+                                            ${
+                                                result.found
+                                                    ? "Found"
+                                                    : "Missing"
+                                            }
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="progress-bar">
+
+                                        <div
+                                            class="
+                                                progress-fill
+                                                ${
+                                                    result.found
+                                                        ? "found"
+                                                        : "missing"
+                                                }
+                                            "
+                                            data-width="${
+                                                result.found
+                                                    ? "100%"
+                                                    : "15%"
+                                            }"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+                            `;
+                        })
+                        .join("");
+
+            const missingSkillsList =
+                document.getElementById(
+                    "missingSkillsList"
+                );
+
+            if (
+                analysis.missingSkills.length
+                === 0
+            ) {
+                missingSkillsList.innerHTML = `
+                    <p class="muted">
+                        No major skill gaps were found.
+                    </p>
+                `;
+            } else {
+                missingSkillsList.innerHTML =
+                    analysis.missingSkills
+                        .map(result => {
+                            return `
+                                <div class="gap-item">
+
+                                    <span>
+                                        ${formatSkill(
+                                            result.skill
+                                        )}
+                                    </span>
+
+                                    <span class="priority">
+                                        High Priority
+                                    </span>
+
+                                </div>
+                            `;
+                        })
+                        .join("");
+            }
+
+            document
+                .getElementById("courseList")
+                .innerHTML =
+                    analysis.profile.courses
+                        .map(course => {
+                            return `
+                                <li>${course}</li>
+                            `;
+                        })
+                        .join("");
+
+            document
+                .getElementById(
+                    "certificationList"
+                )
+                .innerHTML =
+                    analysis.profile
+                        .certifications
+                        .map(certification => {
+                            return `
+                                <li>
+                                    ${certification}
+                                </li>
+                            `;
+                        })
+                        .join("");
+
+            document
+                .getElementById("projectList")
+                .innerHTML =
+                    analysis.profile.projects
+                        .map(project => {
+                            return `
+                                <li>${project}</li>
+                            `;
+                        })
+                        .join("");
+
+            document
+                .getElementById("roadmapList")
+                .innerHTML =
+                    analysis.profile.roadmap
+                        .map(
+                            (
+                                step,
+                                index
+                            ) => {
+                                return `
+                                    <div
+                                        class="roadmap-step"
+                                    >
+
+                                        <div
+                                            class="roadmap-number"
+                                        >
+                                            ${index + 1}
+                                        </div>
+
+                                        <div>
+
+                                            <h3>
+                                                ${step.title}
+                                            </h3>
+
+                                            <p>
+                                                ${step.description}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+                                `;
+                            }
+                        )
+                        .join("");
+
+            requestAnimationFrame(
+                () => {
+                    document
+                        .querySelectorAll(
+                            ".progress-fill"
+                        )
+                        .forEach(
+                            progressFill => {
+                                progressFill
+                                    .style
+                                    .width =
+                                        progressFill
+                                            .dataset
+                                            .width;
+                            }
+                        );
+                }
+            );
+        }
+
+        analyzeButton.addEventListener(
+            "click",
+            async () => {
+                if (!selectedResumeFile) {
+                    showToast(
+                        "Please upload your resume first."
+                    );
+
+                    return;
+                }
+
+                analyzeButton.disabled = true;
+
+                loadingSection.classList.add(
+                    "show"
+                );
+
+                resultsSection.classList.remove(
+                    "show"
+                );
+
+                try {
+                    const resumeText =
+                        await extractResumeText(
+                            selectedResumeFile
+                        );
+
+                    if (!resumeText.trim()) {
+                        throw new Error(
+                            "No readable text was found."
+                        );
+                    }
+
+                    const selectedProfile =
+                        careerProfiles[
+                            careerSelect.value
+                        ];
+
+                    const analysis =
+                        analyzeResumeText(
+                            resumeText,
+                            selectedProfile
+                        );
+
+                    renderAnalysis(analysis);
+
+                    resultsSection.classList.add(
+                        "show"
+                    );
+
+                    resultsSection.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                    showToast(
+                        "Resume analysis completed."
+                    );
+                } catch (error) {
+                    console.error(error);
+
+                    showToast(
+                        "The resume could not be read. Try another PDF, DOCX or TXT file."
+                    );
+                } finally {
+                    loadingSection.classList.remove(
+                        "show"
+                    );
+
+                    analyzeButton.disabled = false;
+                }
+            }
+        );
+
+        document
+            .getElementById(
+                "printReportButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    window.print();
+                }
+            );
+
+        document
+            .getElementById(
+                "downloadReportButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    if (!latestAnalysis) {
+                        showToast(
+                            "Analyze a resume first."
+                        );
+
+                        return;
+                    }
+
+                    const analysisText = [
+                        "DECISION TWIN - RESUME ANALYSIS",
+                        "",
+
+                        "Target Career: "
+                        + latestAnalysis
+                            .profile
+                            .name,
+
+                        "Career Match: "
+                        + latestAnalysis
+                            .score
+                        + "%",
+
+                        "",
+                        "SKILLS FOUND:",
+
+                        ...latestAnalysis
+                            .foundSkills
+                            .map(
+                                result =>
+                                    "- "
+                                    + formatSkill(
+                                        result.skill
+                                    )
+                            ),
+
+                        "",
+                        "MISSING SKILLS:",
+
+                        ...latestAnalysis
+                            .missingSkills
+                            .map(
+                                result =>
+                                    "- "
+                                    + formatSkill(
+                                        result.skill
+                                    )
+                            ),
+
+                        "",
+                        "RECOMMENDED COURSES:",
+
+                        ...latestAnalysis
+                            .profile
+                            .courses
+                            .map(
+                                course =>
+                                    "- " + course
+                            ),
+
+                        "",
+                        "CERTIFICATIONS:",
+
+                        ...latestAnalysis
+                            .profile
+                            .certifications
+                            .map(
+                                certification =>
+                                    "- "
+                                    + certification
+                            ),
+
+                        "",
+                        "SUGGESTED PROJECTS:",
+
+                        ...latestAnalysis
+                            .profile
+                            .projects
+                            .map(
+                                project =>
+                                    "- " + project
+                            ),
+
+                        "",
+                        "CAREER ROADMAP:",
+
+                        ...latestAnalysis
+                            .profile
+                            .roadmap
+                            .map(
+                                (
+                                    step,
+                                    index
+                                ) =>
+                                    `${
+                                        index + 1
+                                    }. ${
+                                        step.title
+                                    } - ${
+                                        step.description
+                                    }`
+                            )
+                    ].join("\n");
+
+                    const fileBlob =
+                        new Blob(
+                            [analysisText],
+                            {
+                                type:
+                                    "text/plain"
+                            }
+                        );
+
+                    const downloadUrl =
+                        URL.createObjectURL(
+                            fileBlob
+                        );
+
+                    const downloadLink =
+                        document.createElement(
+                            "a"
+                        );
+
+                    downloadLink.href =
+                        downloadUrl;
+
+                    downloadLink.download =
+                        "decision-twin-resume-analysis.txt";
+
+                    downloadLink.click();
+
+                    URL.revokeObjectURL(
+                        downloadUrl
+                    );
+
+                    showToast(
+                        "Analysis report downloaded."
+                    );
+                }
+            );
+    </script>
+</body>
+</html>

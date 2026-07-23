@@ -1,0 +1,390 @@
+/* ==========================================
+   GOOGLE FONT
+========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+/* ==========================================
+   BODY (DARK BLUE GRADIENT)
+========================================== */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(
+        135deg,
+        #001D39 0%,
+        #0A4174 50%,
+        #1B5383 100%
+    );
+}
+
+/* ==========================================
+   MAIN CONTAINER
+========================================== */
+.container {
+    width: 96%;
+    max-width: 1200px;
+    height: 92vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 24px;
+    background: rgba(0, 29, 57, 0.45);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   HEADER / LOGO (INCREASED SIZE)
+========================================== */
+.app-header {
+    width: 100%;
+    padding: 14px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 29, 57, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Header logo dimensions increased to 75px */
+.app-logo {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.brand-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+.brand-name span {
+    color: #00a8ff;
+}
+
+/* ==========================================
+   CHAT SECTION
+========================================== */
+.chat-section {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.chat-section.active {
+    display: flex;
+    animation: fade .4s ease;
+}
+
+/* ==========================================
+   CHAT BOX
+========================================== */
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    background: #00152B;
+}
+
+.chat-box::-webkit-scrollbar {
+    width: 7px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background: #0A4174;
+    border-radius: 30px;
+}
+
+/* ==========================================
+   HOME SCREEN
+========================================== */
+.home-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: .4s;
+}
+
+/* ==========================================
+   CENTER AREA
+========================================== */
+.center-area {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+/* ==========================================
+   SEARCH BAR
+========================================== */
+.search-box {
+    width: 90%;
+    max-width: 760px;
+    display: flex;
+    gap: 15px;
+}
+
+.search-box input {
+    flex: 1;
+    height: 62px;
+    border: none;
+    outline: none;
+    border-radius: 60px;
+    padding: 0 24px;
+    font-size: 16px;
+    background: #ffffff;
+    color: #001D39;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.search-box input::placeholder {
+    color: #666;
+}
+
+.search-box button {
+    width: 62px;
+    height: 62px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    background: linear-gradient(135deg, #0A4174, #001D39);
+    transition: .3s;
+}
+
+.search-box button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 30px rgba(10, 65, 116, 0.6);
+}
+
+/* ==========================================
+   BOTTOM PANEL & SUGGESTIONS
+========================================== */
+.bottom-panel {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.suggestions {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.chip {
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    transition: .30s;
+    user-select: none;
+}
+
+.chip:hover {
+    background: #ffffff;
+    color: #001D39;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   CHAT MESSAGES & AVATARS
+========================================== */
+.message {
+    display: flex;
+    margin: 18px 0;
+    animation: fade .35s ease;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.message.ai {
+    justify-content: flex-start;
+}
+
+/* Chat avatar increased to 54px */
+.avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 22px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ai-avatar {
+    background: #001D39;
+    margin-right: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.user-avatar {
+    background: #0A4174;
+    margin-left: 12px;
+    order: 2;
+}
+
+.bubble {
+    max-width: 72%;
+    padding: 15px 18px;
+    border-radius: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.ai-bubble {
+    background: #0A2540;
+    color: #e0eaf5;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom-left-radius: 5px;
+}
+
+.user-bubble {
+    color: white;
+    background: linear-gradient(135deg, #0A4174, #001D39);
+    border-bottom-right-radius: 5px;
+}
+
+.bubble ul, .bubble ol {
+    margin-top: 8px;
+    padding-left: 20px;
+}
+
+.bubble li {
+    margin: 5px 0;
+}
+
+/* ==========================================
+   CHAT MODE
+========================================== */
+.container.chat-mode .center-area {
+    flex: 0;
+    width: 100%;
+    padding: 15px 20px 5px;
+}
+
+.container.chat-mode .search-box {
+    width: 100%;
+    max-width: 100%;
+}
+
+.container.chat-mode .bottom-panel {
+    padding: 10px 20px 20px;
+}
+
+.container.chat-mode .suggestions {
+    justify-content: flex-start;
+    max-height: 90px;
+    overflow-y: auto;
+}
+
+/* ==========================================
+   TYPING ANIMATION
+========================================== */
+.typing {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.typing span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6EA2B3;
+    animation: bounce 1s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: .2s; }
+.typing span:nth-child(3) { animation-delay: .4s; }
+
+@keyframes fade {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: .4; }
+    50% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+@media(max-width: 768px) {
+    .container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    .app-logo {
+        width: 56px;
+        height: 56px;
+    }
+    .brand-name {
+        font-size: 20px;
+    }
+    .search-box input { height: 55px; font-size: 15px; }
+    .search-box button { width: 55px; height: 55px; font-size: 18px; }
+    .bubble { max-width: 88%; font-size: 14px; }
+    .chip { font-size: 13px; padding: 8px 14px; }
+}
+
+@media(max-width: 480px) {
+    .chip { width: 100%; text-align: center; }
+    .bubble { max-width: 92%; }
+}

@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Decision Twin - Career Roadmap</title>
+
+    <style>
+        @import url(
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        );
+
+        :root {
+            --dark-navy: #001D39;
+            --dark-blue: #0A4174;
+            --steel-blue: #49769F;
+            --teal-blue: #4E8EA2;
+            --soft-blue: #6EA2B3;
+            --sky-blue: #7BBDE8;
+            --light-blue: #BDD8E9;
+
+            --text: #FFFFFF;
+            --muted: #BDD8E9;
+
+            --border:
+                rgba(189, 216, 233, 0.24);
+
+            --shadow:
+                0 24px 60px
+                rgba(0, 29, 57, 0.42);
+
+            --panel:
+                linear-gradient(
+                    145deg,
+                    rgba(10, 65, 116, 0.94),
+                    rgba(0, 29, 57, 0.95)
+                );
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: "Inter", sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 90% 8%,
+                    rgba(189, 216, 233, 0.35),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 8% 35%,
+                    rgba(78, 142, 162, 0.28),
+                    transparent 32%
+                ),
+                linear-gradient(
+                    180deg,
+                    #BDD8E9 0%,
+                    #7BBDE8 20%,
+                    #6EA2B3 38%,
+                    #4E8EA2 56%,
+                    #49769F 72%,
+                    #0A4174 88%,
+                    #001D39 100%
+                );
+
+            background-attachment: fixed;
+        }
+
+        button,
+        select {
+            font: inherit;
+        }
+
+        button,
+        select {
+            cursor: pointer;
+        }
+
+        .container {
+            width: min(1150px, 92%);
+            margin: auto;
+            padding: 34px 0 60px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 44px;
+
+            color: var(--dark-navy);
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 14px;
+
+            color: var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+
+            box-shadow:
+                0 12px 28px
+                rgba(0, 29, 57, 0.28);
+        }
+
+        .hero {
+            display: block;
+
+            margin-bottom: 28px;
+
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin-bottom: 12px;
+
+            color: var(--dark-blue);
+
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin-bottom: 16px;
+
+            color: var(--dark-navy);
+
+            font-size: clamp(
+                38px,
+                6vw,
+                66px
+            );
+
+            line-height: 1.03;
+        }
+
+        .gradient-text {
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--dark-blue),
+                    var(--teal-blue)
+                );
+
+            background-clip: text;
+            -webkit-background-clip: text;
+
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 740px;
+            margin: auto;
+
+            color: var(--dark-navy);
+
+            font-weight: 500;
+            line-height: 1.8;
+        }
+
+        .panel {
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 22px;
+
+            background: var(--panel);
+
+            box-shadow: var(--shadow);
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .panel-padding {
+            padding: 24px;
+        }
+
+        .generator-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 18px;
+
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 9px;
+        }
+
+        .form-group label {
+            color: var(--light-blue);
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 14px;
+
+            color: white;
+
+            border:
+                1px solid
+                rgba(
+                    189,
+                    216,
+                    233,
+                    0.3
+                );
+
+            border-radius: 12px;
+
+            outline: none;
+
+            background:
+                var(--dark-blue);
+        }
+
+        select:focus {
+            border-color:
+                var(--sky-blue);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    123,
+                    189,
+                    232,
+                    0.18
+                );
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding:
+                13px 17px;
+
+            border: none;
+            border-radius: 12px;
+
+            font-weight: 800;
+
+            transition:
+                0.25s ease;
+        }
+
+        .button:hover {
+            transform:
+                translateY(-2px);
+        }
+
+        .button-primary {
+            color:
+                var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(
+                    0,
+                    29,
+                    57,
+                    0.25
+                );
+        }
+
+        .button-primary:hover {
+            color:
+                var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--light-blue),
+                    var(--sky-blue)
+                );
+        }
+
+        .button-secondary {
+            color: white;
+
+            border:
+                1px solid
+                rgba(
+                    189,
+                    216,
+                    233,
+                    0.32
+                );
+
+            background:
+                rgba(
+                    73,
+                    118,
+                    159,
+                    0.48
+                );
+        }
+
+        .button-secondary:hover {
+            background:
+                rgba(
+                    78,
+                    142,
+                    162,
+                    0.7
+                );
+        }
+
+        .button-danger {
+            color:
+                var(--light-blue);
+
+            border:
+                1px solid
+                rgba(
+                    189,
+                    216,
+                    233,
+                    0.35
+                );
+
+            background:
+                rgba(
+                    0,
+                    29,
+                    57,
+                    0.48
+                );
+        }
+
+        .button-danger:hover {
+            background:
+                rgba(
+                    73,
+                    118,
+                    159,
+                    0.65
+                );
+        }
+
+        .controls {
+            display: grid;
+            align-content: end;
+        }
+
+        .progress-section {
+            margin-bottom: 22px;
+            padding: 22px;
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+
+            margin-bottom: 15px;
+        }
+
+        .progress-header h2 {
+            margin-bottom: 6px;
+
+            font-size: 18px;
+        }
+
+        .small-text,
+        .muted,
+        .phase-label,
+        .roadmap-item p {
+            color:
+                var(--light-blue);
+        }
+
+        .small-text {
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress-track {
+            height: 12px;
+
+            overflow: hidden;
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    0,
+                    29,
+                    57,
+                    0.58
+                );
+        }
+
+        .progress-fill {
+            width: 0;
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+
+            transition:
+                width 0.5s ease;
+        }
+
+        .roadmap {
+            position: relative;
+
+            display: grid;
+            gap: 15px;
+        }
+
+        .roadmap::before {
+            content: "";
+
+            position: absolute;
+
+            top: 20px;
+            bottom: 20px;
+            left: 25px;
+
+            width: 2px;
+
+            background:
+                linear-gradient(
+                    var(--light-blue),
+                    var(--sky-blue),
+                    rgba(
+                        189,
+                        216,
+                        233,
+                        0.16
+                    )
+                );
+        }
+
+        .roadmap-item {
+            position: relative;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-left: 60px;
+            padding: 22px;
+        }
+
+        .roadmap-number {
+            position: absolute;
+
+            top: 28px;
+            left: -48px;
+
+            width: 32px;
+            height: 32px;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                2px solid
+                var(--sky-blue);
+
+            border-radius: 50%;
+
+            color:
+                var(--dark-navy);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+
+            font-size: 12px;
+            font-weight: 800;
+
+            transition:
+                0.25s ease;
+        }
+
+        .roadmap-item.completed
+        .roadmap-number {
+            color: white;
+
+            border-color:
+                var(--light-blue);
+
+            background:
+                var(--teal-blue);
+        }
+
+        .roadmap-item h3 {
+            margin-bottom: 7px;
+
+            font-size: 18px;
+        }
+
+        .roadmap-item p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            margin-top: 14px;
+        }
+
+        .tag {
+            padding: 7px 10px;
+
+            border:
+                1px solid
+                rgba(
+                    189,
+                    216,
+                    233,
+                    0.16
+                );
+
+            border-radius: 999px;
+
+            color:
+                var(--light-blue);
+
+            background:
+                rgba(
+                    73,
+                    118,
+                    159,
+                    0.42
+                );
+
+            font-size: 11px;
+        }
+
+        .roadmap-side {
+            min-width: 130px;
+
+            text-align: right;
+        }
+
+        .phase-label {
+            display: block;
+
+            margin-bottom: 10px;
+
+            font-size: 12px;
+        }
+
+        .complete-button.completed {
+            color:
+                var(--dark-navy);
+
+            border:
+                1px solid
+                var(--light-blue);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--sky-blue),
+                    var(--light-blue)
+                );
+        }
+
+        .resource-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-top: 20px;
+        }
+
+        .resource-card {
+            padding: 21px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(
+                        73,
+                        118,
+                        159,
+                        0.58
+                    ),
+                    rgba(
+                        10,
+                        65,
+                        116,
+                        0.82
+                    )
+                );
+        }
+
+        .resource-icon {
+            margin-bottom: 13px;
+
+            font-size: 30px;
+        }
+
+        .resource-card h3 {
+            margin-bottom: 10px;
+
+            font-size: 16px;
+        }
+
+        .resource-card ul {
+            display: grid;
+            gap: 9px;
+
+            padding-left: 18px;
+
+            color:
+                var(--light-blue);
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .toast {
+            position: fixed;
+
+            right: 22px;
+            bottom: 22px;
+
+            z-index: 1000;
+
+            padding: 14px 18px;
+
+            color:
+                var(--dark-navy);
+
+            border:
+                1px solid
+                var(--light-blue);
+
+            border-radius: 12px;
+
+            background:
+                var(--light-blue);
+
+            box-shadow:
+                0 18px 40px
+                rgba(
+                    0,
+                    29,
+                    57,
+                    0.38
+                );
+        }
+
+        footer {
+            margin-top: 38px;
+
+            color:
+                var(--light-blue);
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .generator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-item {
+                grid-template-columns: 1fr;
+
+                margin-left: 47px;
+            }
+
+            .roadmap::before {
+                left: 18px;
+            }
+
+            .roadmap-number {
+                left: -43px;
+            }
+
+            .roadmap-side {
+                text-align: left;
+            }
+
+            .progress-header {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 94%;
+            }
+
+            .action-buttons {
+                display: grid;
+
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+        }
+
+        @media print {
+            body {
+                color: black;
+
+                background: white;
+            }
+
+            .brand,
+            .generator-grid,
+            .action-buttons,
+            .complete-button,
+            footer {
+                display: none !important;
+            }
+
+            .panel {
+                border:
+                    1px solid #bbbbbb;
+
+                color: black;
+
+                background: white;
+
+                box-shadow: none;
+            }
+
+            .small-text,
+            .roadmap-item p,
+            .phase-label,
+            .resource-card ul {
+                color: #444444;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <div class="brand">
+
+    <h2>Decision Twin</h2>
+
+</div>
+
+        <section class="hero">
+
+            <div class="eyebrow">
+                Personalized Career Planning
+            </div>
+
+            <h1>
+                Career
+                <span class="gradient-text">
+                    Roadmap
+                </span>
+            </h1>
+
+            <p>
+                Select your career and generate a complete
+                step-by-step learning roadmap with courses,
+                certifications and suggested projects.
+            </p>
+
+        </section>
+
+        <section
+            class="panel panel-padding generator-grid"
+        >
+
+            <div class="form-group">
+
+                <label for="careerSelect">
+                    Select your target career
+                </label>
+
+                <select id="careerSelect">
+
+                    <option value="dataScientist">
+                        Data Scientist
+                    </option>
+
+                    <option value="frontendDeveloper">
+                        Frontend Developer
+                    </option>
+
+                    <option value="backendDeveloper">
+                        Backend Developer
+                    </option>
+
+                    <option value="aiEngineer">
+                        AI Engineer
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="controls">
+
+                <button
+                    class="button button-primary"
+                    id="generateButton"
+                >
+                    ✨ Generate Roadmap
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="panel progress-section">
+
+            <div class="progress-header">
+
+                <div>
+
+                    <h2 id="roadmapTitle">
+                        Data Scientist Roadmap
+                    </h2>
+
+                    <p
+                        class="small-text"
+                        id="progressText"
+                    >
+                        0 of 6 phases completed • 0%
+                    </p>
+
+                </div>
+
+                <div class="action-buttons">
+
+                    <button
+                        class="button button-secondary"
+                        id="downloadButton"
+                    >
+                        ⬇ Download
+                    </button>
+
+                    <button
+                        class="button button-secondary"
+                        id="printButton"
+                    >
+                        🖨 Print
+                    </button>
+
+                    <button
+                        class="button button-danger"
+                        id="resetButton"
+                    >
+                        ↺ Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="progress-track">
+
+                <div
+                    class="progress-fill"
+                    id="overallProgress"
+                ></div>
+
+            </div>
+
+        </section>
+
+        <section
+            class="roadmap"
+            id="roadmapContainer"
+        ></section>
+
+        <section class="resource-grid">
+
+            <article class="panel resource-card">
+
+                <div class="resource-icon">
+                    🎓
+                </div>
+
+                <h3>
+                    Recommended Courses
+                </h3>
+
+                <ul id="courseList"></ul>
+
+            </article>
+
+            <article class="panel resource-card">
+
+                <div class="resource-icon">
+                    🏆
+                </div>
+
+                <h3>
+                    Certifications
+                </h3>
+
+                <ul id="certificationList"></ul>
+
+            </article>
+
+            <article class="panel resource-card">
+
+                <div class="resource-icon">
+                    💻
+                </div>
+
+                <h3>
+                    Suggested Projects
+                </h3>
+
+                <ul id="projectList"></ul>
+
+            </article>
+
+        </section>
+
+        <footer>
+            Decision Twin • Standalone Career Roadmap Generator
+        </footer>
+
+    </main>
+
+    <script>
+        const roadmapData = {
+            dataScientist: {
+                name:
+                    "Data Scientist",
+
+                phases: [
+                    {
+                        title:
+                            "Programming Foundations",
+
+                        description:
+                            "Learn Python programming, problem solving and basic mathematics.",
+
+                        skills: [
+                            "Python",
+                            "Logic Building",
+                            "Mathematics",
+                            "Git"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Data Handling",
+
+                        description:
+                            "Learn how to collect, clean, transform and query data.",
+
+                        skills: [
+                            "SQL",
+                            "Pandas",
+                            "NumPy",
+                            "Data Cleaning"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Statistics and Visualization",
+
+                        description:
+                            "Study probability and statistics, then convert data into useful visual insights.",
+
+                        skills: [
+                            "Statistics",
+                            "Probability",
+                            "Matplotlib",
+                            "Power BI"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Machine Learning",
+
+                        description:
+                            "Build supervised and unsupervised machine learning models.",
+
+                        skills: [
+                            "Regression",
+                            "Classification",
+                            "Clustering",
+                            "Scikit-learn"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Advanced Data Science",
+
+                        description:
+                            "Explore deep learning, natural language processing and deployment.",
+
+                        skills: [
+                            "Deep Learning",
+                            "NLP",
+                            "MLOps",
+                            "Deployment"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Portfolio and Placement",
+
+                        description:
+                            "Create real-world projects, build a portfolio and prepare for internships.",
+
+                        skills: [
+                            "GitHub",
+                            "Portfolio",
+                            "Resume",
+                            "Interview Preparation"
+                        ]
+                    }
+                ],
+
+                courses: [
+                    "Python for Data Science",
+                    "Statistics and Probability",
+                    "Machine Learning Fundamentals",
+                    "SQL for Data Analysis"
+                ],
+
+                certifications: [
+                    "Google Advanced Data Analytics Certificate",
+                    "IBM Data Science Professional Certificate",
+                    "Microsoft Power BI Data Analyst"
+                ],
+
+                projects: [
+                    "Customer Churn Prediction",
+                    "Sales Analytics Dashboard",
+                    "Movie Recommendation System",
+                    "Sentiment Analysis Application"
+                ]
+            },
+
+            frontendDeveloper: {
+                name:
+                    "Frontend Developer",
+
+                phases: [
+                    {
+                        title:
+                            "Web Foundations",
+
+                        description:
+                            "Learn the structure and styling of web pages.",
+
+                        skills: [
+                            "HTML",
+                            "CSS",
+                            "Forms",
+                            "Responsive Design"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "JavaScript Fundamentals",
+
+                        description:
+                            "Learn programming concepts and browser interaction.",
+
+                        skills: [
+                            "Variables",
+                            "Functions",
+                            "Arrays",
+                            "DOM"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Version Control",
+
+                        description:
+                            "Manage projects using Git and GitHub.",
+
+                        skills: [
+                            "Git",
+                            "GitHub",
+                            "Branches",
+                            "Collaboration"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Frontend Framework",
+
+                        description:
+                            "Learn modern component-based frontend development.",
+
+                        skills: [
+                            "React",
+                            "Components",
+                            "State",
+                            "Routing"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "APIs and Testing",
+
+                        description:
+                            "Connect frontend applications to APIs and test the interface.",
+
+                        skills: [
+                            "REST API",
+                            "Fetch",
+                            "Testing",
+                            "Accessibility"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Portfolio and Deployment",
+
+                        description:
+                            "Build frontend projects and deploy them online.",
+
+                        skills: [
+                            "Portfolio",
+                            "GitHub Pages",
+                            "Vercel",
+                            "Interview Preparation"
+                        ]
+                    }
+                ],
+
+                courses: [
+                    "Responsive Web Design",
+                    "JavaScript Fundamentals",
+                    "React Development",
+                    "Frontend Testing"
+                ],
+
+                certifications: [
+                    "Meta Front-End Developer Certificate",
+                    "freeCodeCamp Responsive Web Design",
+                    "JavaScript Algorithms and Data Structures"
+                ],
+
+                projects: [
+                    "Responsive Portfolio Website",
+                    "Expense Tracker",
+                    "Weather Dashboard",
+                    "E-commerce Product Interface"
+                ]
+            },
+
+            backendDeveloper: {
+                name:
+                    "Backend Developer",
+
+                phases: [
+                    {
+                        title:
+                            "Programming Foundations",
+
+                        description:
+                            "Strengthen programming and object-oriented concepts.",
+
+                        skills: [
+                            "Python",
+                            "OOP",
+                            "Functions",
+                            "Data Structures"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Database Fundamentals",
+
+                        description:
+                            "Learn relational databases and data modelling.",
+
+                        skills: [
+                            "SQL",
+                            "Database Design",
+                            "Joins",
+                            "Normalization"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Backend Framework",
+
+                        description:
+                            "Build server-side applications using a Python framework.",
+
+                        skills: [
+                            "FastAPI",
+                            "Flask",
+                            "Django",
+                            "Routing"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "REST API Development",
+
+                        description:
+                            "Create APIs for communication between frontend and backend.",
+
+                        skills: [
+                            "REST",
+                            "HTTP Methods",
+                            "JSON",
+                            "CRUD"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Security and Deployment",
+
+                        description:
+                            "Secure and deploy backend applications.",
+
+                        skills: [
+                            "Authentication",
+                            "JWT",
+                            "Docker",
+                            "Cloud Deployment"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Backend Portfolio",
+
+                        description:
+                            "Build complete backend projects with documentation.",
+
+                        skills: [
+                            "API Documentation",
+                            "GitHub",
+                            "Testing",
+                            "Interview Preparation"
+                        ]
+                    }
+                ],
+
+                courses: [
+                    "Python Backend Development",
+                    "FastAPI Fundamentals",
+                    "Database and SQL",
+                    "REST API Development"
+                ],
+
+                certifications: [
+                    "Meta Back-End Developer Certificate",
+                    "IBM Full Stack Software Developer",
+                    "Microsoft Azure Fundamentals"
+                ],
+
+                projects: [
+                    "Student Management REST API",
+                    "Authentication System",
+                    "Complaint Management API",
+                    "Task Manager Backend"
+                ]
+            },
+
+            aiEngineer: {
+                name:
+                    "AI Engineer",
+
+                phases: [
+                    {
+                        title:
+                            "Python and Mathematics",
+
+                        description:
+                            "Learn the programming and mathematical foundations of AI.",
+
+                        skills: [
+                            "Python",
+                            "Linear Algebra",
+                            "Statistics",
+                            "Probability"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Machine Learning",
+
+                        description:
+                            "Learn model training, evaluation and feature engineering.",
+
+                        skills: [
+                            "Regression",
+                            "Classification",
+                            "Clustering",
+                            "Scikit-learn"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "Deep Learning",
+
+                        description:
+                            "Build neural networks using popular deep learning libraries.",
+
+                        skills: [
+                            "Neural Networks",
+                            "TensorFlow",
+                            "PyTorch",
+                            "CNN"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "AI Specialization",
+
+                        description:
+                            "Choose and study an advanced AI field.",
+
+                        skills: [
+                            "NLP",
+                            "Computer Vision",
+                            "Generative AI",
+                            "Transformers"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "MLOps and Deployment",
+
+                        description:
+                            "Deploy and manage AI models in production.",
+
+                        skills: [
+                            "APIs",
+                            "Docker",
+                            "Cloud",
+                            "MLOps"
+                        ]
+                    },
+
+                    {
+                        title:
+                            "AI Portfolio",
+
+                        description:
+                            "Build end-to-end AI projects and prepare for placement.",
+
+                        skills: [
+                            "GitHub",
+                            "Documentation",
+                            "Deployment",
+                            "Interview Preparation"
+                        ]
+                    }
+                ],
+
+                courses: [
+                    "Machine Learning Specialization",
+                    "Deep Learning Fundamentals",
+                    "Natural Language Processing",
+                    "MLOps and Model Deployment"
+                ],
+
+                certifications: [
+                    "Microsoft Azure AI Engineer Associate",
+                    "Google Professional Machine Learning Engineer",
+                    "TensorFlow Developer Certificate"
+                ],
+
+                projects: [
+                    "AI Resume Analyzer",
+                    "Image Classification System",
+                    "NLP Chatbot",
+                    "Deployed Machine Learning API"
+                ]
+            }
+        };
+
+        const careerSelect =
+            document.getElementById(
+                "careerSelect"
+            );
+
+        const generateButton =
+            document.getElementById(
+                "generateButton"
+            );
+
+        const roadmapTitle =
+            document.getElementById(
+                "roadmapTitle"
+            );
+
+        const progressText =
+            document.getElementById(
+                "progressText"
+            );
+
+        const overallProgress =
+            document.getElementById(
+                "overallProgress"
+            );
+
+        const roadmapContainer =
+            document.getElementById(
+                "roadmapContainer"
+            );
+
+        const courseList =
+            document.getElementById(
+                "courseList"
+            );
+
+        const certificationList =
+            document.getElementById(
+                "certificationList"
+            );
+
+        const projectList =
+            document.getElementById(
+                "projectList"
+            );
+
+        const downloadButton =
+            document.getElementById(
+                "downloadButton"
+            );
+
+        const printButton =
+            document.getElementById(
+                "printButton"
+            );
+
+        const resetButton =
+            document.getElementById(
+                "resetButton"
+            );
+
+        const progressStorageKey =
+            "decisionTwinRoadmapProgress";
+
+        const careerStorageKey =
+            "decisionTwinRoadmapCareer";
+
+        let selectedCareerKey =
+            localStorage.getItem(
+                careerStorageKey
+            ) || "dataScientist";
+
+        let completedPhases =
+            JSON.parse(
+                localStorage.getItem(
+                    progressStorageKey
+                ) || "{}"
+            );
+
+        function showToast(message) {
+            const oldToast =
+                document.querySelector(
+                    ".toast"
+                );
+
+            if (oldToast) {
+                oldToast.remove();
+            }
+
+            const toast =
+                document.createElement(
+                    "div"
+                );
+
+            toast.className =
+                "toast";
+
+            toast.textContent =
+                message;
+
+            document.body.appendChild(
+                toast
+            );
+
+            setTimeout(
+                () => {
+                    toast.remove();
+                },
+                2400
+            );
+        }
+
+        function getCareerCompletedPhases() {
+            return (
+                completedPhases[
+                    selectedCareerKey
+                ] || []
+            );
+        }
+
+        function saveProgress() {
+            localStorage.setItem(
+                progressStorageKey,
+                JSON.stringify(
+                    completedPhases
+                )
+            );
+        }
+
+        function updateProgress() {
+            const completed =
+                getCareerCompletedPhases();
+
+            const totalPhases =
+                roadmapData[
+                    selectedCareerKey
+                ].phases.length;
+
+            const percentage =
+                Math.round(
+                    (
+                        completed.length
+                        / totalPhases
+                    )
+                    * 100
+                );
+
+            progressText.textContent =
+                `${completed.length} of ${totalPhases} phases completed • ${percentage}%`;
+
+            overallProgress.style.width =
+                percentage + "%";
+
+            saveProgress();
+        }
+
+        function renderRoadmap() {
+            const selectedCareer =
+                roadmapData[
+                    selectedCareerKey
+                ];
+
+            const completed =
+                getCareerCompletedPhases();
+
+            careerSelect.value =
+                selectedCareerKey;
+
+            roadmapTitle.textContent =
+                selectedCareer.name
+                + " Roadmap";
+
+            roadmapContainer.innerHTML =
+                selectedCareer.phases
+                    .map(
+                        (
+                            phase,
+                            index
+                        ) => {
+                            const phaseId =
+                                "phase-"
+                                + index;
+
+                            const isCompleted =
+                                completed.includes(
+                                    phaseId
+                                );
+
+                            return `
+                                <article
+                                    class="
+                                        panel
+                                        roadmap-item
+                                        ${
+                                            isCompleted
+                                                ? "completed"
+                                                : ""
+                                        }
+                                    "
+                                    data-phase-id="${phaseId}"
+                                >
+
+                                    <span
+                                        class="roadmap-number"
+                                    >
+                                        ${index + 1}
+                                    </span>
+
+                                    <div>
+
+                                        <h3>
+                                            ${phase.title}
+                                        </h3>
+
+                                        <p>
+                                            ${phase.description}
+                                        </p>
+
+                                        <div class="tags">
+
+                                            ${
+                                                phase.skills
+                                                    .map(
+                                                        skill => `
+                                                            <span
+                                                                class="tag"
+                                                            >
+                                                                ${skill}
+                                                            </span>
+                                                        `
+                                                    )
+                                                    .join("")
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    <div
+                                        class="roadmap-side"
+                                    >
+
+                                        <span
+                                            class="phase-label"
+                                        >
+                                            Phase ${index + 1}
+                                        </span>
+
+                                        <button
+                                            class="
+                                                button
+                                                button-secondary
+                                                complete-button
+                                                ${
+                                                    isCompleted
+                                                        ? "completed"
+                                                        : ""
+                                                }
+                                            "
+                                        >
+                                            ${
+                                                isCompleted
+                                                    ? "✓ Completed"
+                                                    : "Mark Complete"
+                                            }
+                                        </button>
+
+                                    </div>
+
+                                </article>
+                            `;
+                        }
+                    )
+                    .join("");
+
+            courseList.innerHTML =
+                selectedCareer.courses
+                    .map(
+                        course =>
+                            `<li>${course}</li>`
+                    )
+                    .join("");
+
+            certificationList.innerHTML =
+                selectedCareer
+                    .certifications
+                    .map(
+                        certification =>
+                            `<li>${certification}</li>`
+                    )
+                    .join("");
+
+            projectList.innerHTML =
+                selectedCareer.projects
+                    .map(
+                        project =>
+                            `<li>${project}</li>`
+                    )
+                    .join("");
+
+            document
+                .querySelectorAll(
+                    ".complete-button"
+                )
+                .forEach(
+                    button => {
+                        button.addEventListener(
+                            "click",
+                            () => {
+                                const phaseId =
+                                    button
+                                        .closest(
+                                            ".roadmap-item"
+                                        )
+                                        .dataset
+                                        .phaseId;
+
+                                togglePhase(
+                                    phaseId
+                                );
+                            }
+                        );
+                    }
+                );
+
+            updateProgress();
+        }
+
+        function togglePhase(
+            phaseId
+        ) {
+            const currentCompleted =
+                getCareerCompletedPhases();
+
+            if (
+                currentCompleted.includes(
+                    phaseId
+                )
+            ) {
+                completedPhases[
+                    selectedCareerKey
+                ] =
+                    currentCompleted.filter(
+                        item =>
+                            item !== phaseId
+                    );
+
+                showToast(
+                    "Phase marked as pending."
+                );
+            } else {
+                completedPhases[
+                    selectedCareerKey
+                ] = [
+                    ...currentCompleted,
+                    phaseId
+                ];
+
+                showToast(
+                    "Phase completed successfully."
+                );
+            }
+
+            renderRoadmap();
+        }
+
+        generateButton.addEventListener(
+            "click",
+            () => {
+                selectedCareerKey =
+                    careerSelect.value;
+
+                localStorage.setItem(
+                    careerStorageKey,
+                    selectedCareerKey
+                );
+
+                renderRoadmap();
+
+                showToast(
+                    "Career roadmap generated."
+                );
+            }
+        );
+
+        resetButton.addEventListener(
+            "click",
+            () => {
+                const confirmed =
+                    confirm(
+                        "Reset progress for this career?"
+                    );
+
+                if (!confirmed) {
+                    return;
+                }
+
+                completedPhases[
+                    selectedCareerKey
+                ] = [];
+
+                saveProgress();
+
+                renderRoadmap();
+
+                showToast(
+                    "Roadmap progress reset."
+                );
+            }
+        );
+
+        printButton.addEventListener(
+            "click",
+            () => {
+                window.print();
+            }
+        );
+
+        downloadButton.addEventListener(
+            "click",
+            () => {
+                const selectedCareer =
+                    roadmapData[
+                        selectedCareerKey
+                    ];
+
+                const completed =
+                    getCareerCompletedPhases();
+
+                const roadmapText = [
+                    "DECISION TWIN - CAREER ROADMAP",
+                    "",
+
+                    "Target Career: "
+                    + selectedCareer.name,
+
+                    "",
+
+                    ...selectedCareer
+                        .phases
+                        .map(
+                            (
+                                phase,
+                                index
+                            ) => {
+                                const phaseId =
+                                    "phase-"
+                                    + index;
+
+                                const status =
+                                    completed.includes(
+                                        phaseId
+                                    )
+                                        ? "Completed"
+                                        : "Pending";
+
+                                return [
+                                    `${index + 1}. ${phase.title}`,
+
+                                    `Status: ${status}`,
+
+                                    `Description: ${phase.description}`,
+
+                                    `Skills: ${phase.skills.join(", ")}`,
+
+                                    ""
+                                ].join("\n");
+                            }
+                        ),
+
+                    "RECOMMENDED COURSES:",
+
+                    ...selectedCareer
+                        .courses
+                        .map(
+                            course =>
+                                "- " + course
+                        ),
+
+                    "",
+
+                    "CERTIFICATIONS:",
+
+                    ...selectedCareer
+                        .certifications
+                        .map(
+                            certification =>
+                                "- "
+                                + certification
+                        ),
+
+                    "",
+
+                    "SUGGESTED PROJECTS:",
+
+                    ...selectedCareer
+                        .projects
+                        .map(
+                            project =>
+                                "- " + project
+                        )
+                ].join("\n");
+
+                const blob =
+                    new Blob(
+                        [roadmapText],
+                        {
+                            type:
+                                "text/plain"
+                        }
+                    );
+
+                const url =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+                link.href =
+                    url;
+
+                link.download =
+                    selectedCareer.name
+                        .toLowerCase()
+                        .replace(
+                            /\s+/g,
+                            "-"
+                        )
+                    + "-roadmap.txt";
+
+                link.click();
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+                showToast(
+                    "Roadmap downloaded."
+                );
+            }
+        );
+
+        renderRoadmap();
+    </script>
+</body>
+</html>
