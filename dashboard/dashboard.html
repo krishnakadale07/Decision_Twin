@@ -8,13 +8,13 @@
 <link rel="stylesheet" href="dashboard.css">
 <style>
   :root{
-    --c1:#001D39; /* darkest navy - sidebar, headings */
-    --c2:#0A4174; /* deep blue - active states, primary accent */
-    --c3:#49769F; /* mid steel blue - secondary text */
-    --c4:#4E8EA2; /* teal blue - icons, progress fills */
-    --c5:#6EA2B3; /* muted teal - completed states */
-    --c6:#7BBDE8; /* light blue - highlights, chart accents */
-    --c7:#BDD8E9; /* palest blue - backgrounds, pills */
+    --c1:#001D39;
+    --c2:#0A4174;
+    --c3:#49769F;
+    --c4:#4E8EA2;
+    --c5:#6EA2B3;
+    --c6:#7BBDE8;
+    --c7:#BDD8E9;
     --bg:#f4f8fb;
     --card:#ffffff;
     --border:rgba(10,65,116,0.15);
@@ -154,11 +154,9 @@
         <a href="../Duhita(member 6)/career-roadmap.html"><i class="ti ti-route"></i>Career Roadmap</a>
         <a href="../ROI/trends.html"><i class="ti ti-trending-up"></i>Industry Trends</a>
         <a href="../profile/profile.html"><i class="ti ti-user"></i>User Overview</a>
-        <a href="../Mentor/mentor.html"><i class="ti ti-robot"></i>AI Mentor</a>
       </nav>
     </div>
 
-    <!-- PROFILE MINI -->
     <div class="profile-mini" onclick="window.location.href='../profile/profile.html'">
       <div class="who">
         <div class="avatar" id="userInitials">--</div>
@@ -181,7 +179,6 @@
       <div class="search-bar"><i class="ti ti-search"></i>Search careers, reports, comparisons...</div>
     </div>
 
-    <!-- Dynamic Welcome Banner -->
     <div class="welcome">
       <div>
         <div class="eyebrow">WELCOME BACK</div>
@@ -195,13 +192,12 @@
       </div>
     </div>
 
-    <!-- Stat Cards -->
     <div class="stat-grid">
       <div class="stat-card">
         <div class="icon-badge"><i class="ti ti-arrows-left-right"></i></div>
         <div class="stat-label">Total Comparisons</div>
-        <div class="stat-value">128</div>
-        <span class="pill">▲ 12% this month</span>
+        <div class="stat-value" id="statComparisons">0</div>
+        <span class="pill">▲ Active in Backend</span>
       </div>
       <div class="stat-card">
         <div class="icon-badge"><i class="ti ti-bookmark"></i></div>
@@ -223,7 +219,6 @@
       </div>
     </div>
 
-    <!-- Charts Panel -->
     <div class="panel-grid">
       <div class="panel">
         <div class="panel-head">
@@ -242,9 +237,7 @@
       </div>
     </div>
 
-    <!-- Career Roadmap + AI Mentor Panel -->
     <div class="panel-grid">
-      <!-- Dynamic Roadmap Box connected to career-roadmap.html -->
       <div class="panel">
         <div class="panel-head">
           <h3 id="dashRoadmapTitle">Career Roadmap Progress</h3>
@@ -266,7 +259,6 @@
         </div>
       </div>
 
-      <!-- AI Mentor Card -->
       <div class="panel mentor-panel">
         <div class="panel-head"><h3>AI Mentor</h3></div>
         <div class="mentor-msg">Based on your target roadmap, focus on core domain projects and skill certifications this month to maximize your market score.</div>
@@ -282,46 +274,48 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="dashboard.js"></script>
 <script>
-// Load dynamic profile & roadmap data synchronized across modules
-function loadDashboardData() {
-  // 1. Profile Data Sync
-  const savedFullName = localStorage.getItem('pathway_user_fullname');
-  const savedEmail = localStorage.getItem('userEmail');
+const API_BASE_URL = 'http://127.0.0.1:5000/api';
 
-  let fullName = "User";
+async function loadDashboardData() {
+  const token = localStorage.getItem('token');
 
-  if (savedFullName && savedFullName.trim() !== '') {
-    fullName = savedFullName.trim();
-  } else if (savedEmail && savedEmail.trim() !== '') {
-    fullName = savedEmail.split('@')[0];
+  // Load backend profile if logged in
+  if (token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const user = await res.json();
+        document.getElementById('welcomeUserName').textContent = user.username;
+        document.getElementById('sidebarUserName').textContent = user.username;
+        
+        const initials = user.username.slice(0, 2).toUpperCase();
+        document.getElementById('userInitials').textContent = initials;
+      }
+    } catch (e) {
+      console.warn("Could not fetch user profile from API, using fallback.");
+    }
+
+    // Load user decisions count from API
+    try {
+      const decRes = await fetch(`${API_BASE_URL}/decisions`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (decRes.ok) {
+        const decisions = await decRes.json();
+        document.getElementById('statComparisons').textContent = decisions.length;
+      }
+    } catch (e) {
+      console.warn("Could not fetch decisions from API.");
+    }
   }
 
-  const nameParts = fullName.split(' ');
-  const firstName = nameParts[0];
-  const initials = nameParts.map(n => n[0]).join('').toUpperCase().slice(0, 2);
-
-  const welcomeEl = document.getElementById('welcomeUserName');
-  const sidebarEl = document.getElementById('sidebarUserName');
-  const avatarEl = document.getElementById('userInitials');
-
-  if (welcomeEl) welcomeEl.textContent = firstName;
-  if (sidebarEl) sidebarEl.textContent = fullName;
-  if (avatarEl) avatarEl.textContent = initials || '--';
-
-  // 2. Application Tracker Count Sync
+  // Application Tracker Count Sync
   const savedApps = JSON.parse(localStorage.getItem('decisionTwin_apps') || '[]');
   const appsCountEl = document.getElementById('statAppsCount');
   if (appsCountEl) {
     appsCountEl.textContent = savedApps.length;
-  }
-
-  // 3. Roadmap Career Title Sync
-  const targetCareer = localStorage.getItem('decisionTwinRoadmapCareer');
-  if (targetCareer) {
-    const formatName = targetCareer.replace(/([A-Z])/g, ' $1').trim();
-    const formattedTitle = formatName.charAt(0).toUpperCase() + formatName.slice(1);
-    const titleEl = document.getElementById('dashRoadmapTitle');
-    if (titleEl) titleEl.textContent = formattedTitle + " Roadmap";
   }
 }
 

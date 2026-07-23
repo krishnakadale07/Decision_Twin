@@ -141,7 +141,6 @@
 </head>
 <body>
 
-  <!-- Background decor matching main theme -->
   <div class="bg-decor" aria-hidden="true">
     <div class="glow glow-a"></div>
     <div class="glow glow-b"></div>
@@ -160,8 +159,8 @@
       <!-- 1. LOGIN FORM -->
       <form id="login-form" class="auth-mode active" onsubmit="handleLogin(event)" autocomplete="off">
         <div class="form-group">
-          <label for="login-email">Email Address</label>
-          <input type="email" id="login-email" placeholder="name@company.com" autocomplete="off" required>
+          <label for="login-username">Username or Email</label>
+          <input type="text" id="login-username" placeholder="username or email" autocomplete="off" required>
         </div>
         <div class="form-group">
           <label for="login-password">Password</label>
@@ -186,8 +185,8 @@
       <!-- 2. SIGNUP FORM -->
       <form id="signup-form" class="auth-mode" onsubmit="handleSignup(event)" autocomplete="off">
         <div class="form-group">
-          <label for="signup-name">Full Name</label>
-          <input type="text" id="signup-name" placeholder="Alex Morgan" autocomplete="off" required>
+          <label for="signup-name">Username</label>
+          <input type="text" id="signup-name" placeholder="alexmorgan" autocomplete="off" required>
         </div>
         <div class="form-group">
           <label for="signup-email">Email Address</label>
@@ -219,12 +218,12 @@
   </div>
 
   <script>
-    // Always clear form fields when page loads for a fresh clean input
+    const API_BASE_URL = 'http://127.0.0.1:5000/api';
+
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('form').forEach(form => form.reset());
     });
 
-    // Toggle between Login, Signup, and Forgot Password modes
     function switchMode(mode) {
       document.querySelectorAll('.auth-mode').forEach(el => el.classList.remove('active'));
       
@@ -246,35 +245,78 @@
       }
     }
 
-    // Handle Login Submit
-    function handleLogin(e) {
+    // CONNECTED LOGIN HANDLER
+    async function handleLogin(e) {
       e.preventDefault();
-      const emailInput = document.getElementById('login-email').value;
+      const usernameInput = document.getElementById('login-username').value;
+      const passwordInput = document.getElementById('login-password').value;
       const roleInput = document.getElementById('login-role').value;
 
-      localStorage.setItem('userEmail', emailInput);
-      localStorage.setItem('userRole', roleInput);
-      localStorage.setItem('isLoggedIn', 'true');
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: usernameInput,
+            password: passwordInput
+          })
+        });
 
-      // Redirect based on selected role
-      if (roleInput === 'admin') {
-        window.location.href = '../adminpanel/admin_dashboard.html';
-      } else {
-        window.location.href = '../dashboard/dashboard.html';
+        const data = await response.json();
+
+        if (response.ok && data.access_token) {
+          localStorage.setItem('token', data.access_token);
+          localStorage.setItem('userEmail', data.user?.email || usernameInput);
+          localStorage.setItem('pathway_user_fullname', data.user?.username || usernameInput);
+          localStorage.setItem('userRole', roleInput);
+          localStorage.setItem('isLoggedIn', 'true');
+
+          if (roleInput === 'admin') {
+            window.location.href = '../adminpanel/admin_dashboard.html';
+          } else {
+            window.location.href = '../dashboard/dashboard.html';
+          }
+        } else {
+          alert(data.error || 'Login failed. Invalid credentials.');
+        }
+      } catch (err) {
+        console.error('API Error:', err);
+        alert('Could not connect to Flask server. Please check if backend is running.');
       }
     }
 
-    // Handle Signup Submit
-    function handleSignup(e) {
+    // CONNECTED SIGNUP HANDLER
+    async function handleSignup(e) {
       e.preventDefault();
+      const usernameInput = document.getElementById('signup-name').value;
       const emailInput = document.getElementById('signup-email').value;
-      localStorage.setItem('userEmail', emailInput);
-      localStorage.setItem('userRole', 'user');
-      localStorage.setItem('isLoggedIn', 'true');
-      window.location.href = '../dashboard/dashboard.html';
+      const passwordInput = document.getElementById('signup-password').value;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: usernameInput,
+            email: emailInput,
+            password: passwordInput
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Account created successfully! Please log in.');
+          switchMode('login');
+        } else {
+          alert(data.error || 'Registration failed.');
+        }
+      } catch (err) {
+        console.error('API Error:', err);
+        alert('Could not connect to Flask server. Please check if backend is running.');
+      }
     }
 
-    // Handle Forgot Password Submit
     function handleForgot(e) {
       e.preventDefault();
       alert('Password reset link sent to your email!');
